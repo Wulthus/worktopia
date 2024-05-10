@@ -72,5 +72,4 @@ function inspectValues($value) {
   function inspectValueAndHold($value) {
     echo "<pre>";
     die(var_dump($value));
-    echo "</pre>";
 };
