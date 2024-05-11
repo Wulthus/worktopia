@@ -2,7 +2,7 @@
 
 $getRoutes = [
     "/" => 'controllers/home.php',
-    "/listings" => "controllers/listings/index.php",
+    "/listings" => "controllers/listings/listings.php",
     "/listings/create" => "controllers/listings/create/create.php",
     "404" => "controllers/errors/404.php",
 ];
