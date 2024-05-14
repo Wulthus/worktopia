@@ -13,12 +13,11 @@ class Database {
         $dsn = "mysql:host={$config['host']};port={$config['port']};dbname={$config['dbname']}";
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
         ];
 
         try {
             $this-> connection = new PDO($dsn, $config["username"], $config["password"], $options);
-            echo "connected!";
         } catch (PDOException $exeption){
             throw new Exception("Database connection failed {$exeption->getMessage()}");
         }
@@ -32,10 +31,15 @@ class Database {
      * @return PDOStatement
      * @throws PDOException
      */
-    public function query($query) {
+    public function query($query, $params = []) {
 
         try {
             $statement = $this->connection->prepare($query);
+
+            foreach($params as $param => $value) {
+                $statement->bindValue(":" . $param, $value);
+            }
+
             $statement->execute();
             return $statement;
         } catch(PDOException $exception) {

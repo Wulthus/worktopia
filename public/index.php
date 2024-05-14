@@ -11,7 +11,7 @@ $router = new Router();
 $routes = require"../routes.php";
 
 //------------------------------------------GETTING SERVER INFO
-$uri = $_SERVER['REQUEST_URI'];
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
 
 //------------------------------------------ROUTING REQUEST
