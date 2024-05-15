@@ -1,5 +1,5 @@
 <?php
-    require basePath("views/partials/head.php")
+    loadPartial("head");
 ?>
 
   <body class="bg-gray-100">

@@ -1,0 +1,17 @@
+{
+    "name" : "wulthus/worktopia",
+    "description" : "A Web-powered job board",
+    "authors" : [
+        {
+            "name" : "Michał Żywicki",
+            "email": "sickness2024@protonmail.com"
+        }
+
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "Framework\\": "Framework/",
+            "App\\": "App/"
+        }
+    }
+ }

@@ -1,5 +1,5 @@
 <?php
-    require basePath("views/partials/head.php")
+  loadPartial("head");
 ?>
 
 <?php loadPartial("nav-bar") ?>

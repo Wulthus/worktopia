@@ -1,11 +1,11 @@
 <?php
 
 $getRoutes = [
-    "/" => 'controllers/home.php',
-    "/listings" => "controllers/listings/listings.php",
-    "/listings/create" => "controllers/listings/create/create.php",
-    "/listing" => "controllers/listings/show/details.php",
-    "404" => "controllers/errors/404.php",
+    "/" => 'App/controllers/home.php',
+    "/listings" => "App/controllers/listings/listings.php",
+    "/listings/create" => "App/controllers/listings/create/create.php",
+    "/listing" => "App/controllers/listings/show/details.php",
+    "404" => "App/controllers/errors/404.php",
 ];
 
 
