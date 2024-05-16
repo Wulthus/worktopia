@@ -9,14 +9,16 @@ class Router {
      *add a GET route
      * @param string #method
      * @param string $uri
-     * @param string $controller
+     * @param string $action
      */
 
-     public function registerRoute($method, $uri, $controller){
+     public function registerRoute($method, $uri, $action){
+      list($controller, $controllerMethod) = explode("@", $action);
         $this->routes[] = [
             'method' => $method,
             'uri' => $uri,
             'controller' => $controller,
+            'controllerMethod' => $controllerMethod,
         ];
      }
 
@@ -90,9 +92,17 @@ class Router {
       public function route($uri, $method){
 
         foreach($this->routes as $route){
+         var_dump($route);
             if ($route['uri'] === $uri && $route['method'] === $method){
-                require basePath($route['controller']);
-                return;
+               $controller = "App\\controllers\\" . $route["controller"];
+               $controllerMethod = $route["controllerMethod"];
+
+               $controllerInstance = new $controller();
+               $controllerInstance->$controllerMethod;
+               return;
+
+               //  require basePath($route['controller']);
+               //  return;
             };
         };
         $this->error(404);
