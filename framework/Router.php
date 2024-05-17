@@ -2,6 +2,8 @@
 
 namespace Framework;
 
+use App\controllers\ErrorController;
+
 class Router {
     protected $routes = [];
 
@@ -92,20 +94,19 @@ class Router {
       public function route($uri, $method){
 
         foreach($this->routes as $route){
-         var_dump($route);
             if ($route['uri'] === $uri && $route['method'] === $method){
                $controller = "App\\controllers\\" . $route["controller"];
                $controllerMethod = $route["controllerMethod"];
-
+               
                $controllerInstance = new $controller();
-               $controllerInstance->$controllerMethod;
+               $controllerInstance->$controllerMethod();
                return;
 
                //  require basePath($route['controller']);
                //  return;
             };
         };
-        $this->error(404);
+        ErrorController::notFound();
       }
 
 }
