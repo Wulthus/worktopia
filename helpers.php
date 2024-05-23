@@ -92,3 +92,13 @@ function inspectValues($value) {
  function formatSalary($salary){
     return "$".number_format($salary, 2, ".", ",");
  };
+
+/**
+* Method to sanitise input
+*
+*@param string $rawInput
+*@return string
+*/
+function sanitizeInput($rawInput){
+    return filter_var(trim($rawInput), FILTER_SANITIZE_SPECIAL_CHARS);
+}

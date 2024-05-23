@@ -11,7 +11,18 @@ $getRoutes = [
     // "404" => "App/controllers/errors/404.php",
 ];
 
+$postRoutes = [
+    "/listings" => "ListingController@store"
+];
+
+//---------------------------------------------GET ROUTES
 
 foreach ($getRoutes as $uri => $controller){
     $router->get($uri, $controller);
+}
+
+//---------------------------------------------POST ROUTES
+
+foreach ($postRoutes as $uri => $controller){
+    $router->post($uri, $controller);
 }
