@@ -22,6 +22,14 @@ class ListingController {
         'email',
     ];
 
+    protected $requiredFields = [
+        'title',
+        'description',
+        'email',
+        'city',
+        'state',
+    ];
+
     public function __construct(){
         $config = require basePath("config/database.php");
         $this-> database = new Database($config);
@@ -58,12 +66,30 @@ class ListingController {
 
      public function store(){
 
+        $errors = [];
+
         $cleanData = array_intersect_key($_POST, array_flip($this->allowedFields));
         //-----------------------------------------------------------------------------HARD CODED USER ID, DELETE LATER
         $cleanData["user_id"] = 1;
         //-----------------------------------------------------------------------------
         $cleanData = array_map('sanitizeInput', $cleanData);
-        inspectValueAndHold($cleanData);
+        
+        foreach ($this->requiredFields as $field) {
+            if (empty($cleanData[$field]) && !Validation::validateString($cleanData[$field])) {
+                $errors[] = '"' . ucfirst($field) . '"' . ' field is required';
+
+            }
+        }
+
+        if (!empty($errors)){
+            loadView('/listings/create/create', [
+                'errors'=> $errors,
+                'fieldData' => $cleanData,
+            ]);
+        } else {
+            echo "Field can be submitted";
+        };
+
      }
      
 
