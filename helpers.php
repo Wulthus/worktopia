@@ -102,3 +102,15 @@ function inspectValues($value) {
 function sanitizeInput($rawInput){
     return filter_var(trim($rawInput), FILTER_SANITIZE_SPECIAL_CHARS);
 }
+
+/**
+ * A method to redirect to a given url
+ * 
+ * @param string $url
+ * @return void
+ */
+
+ function redirect($url){
+    header("Location: {$url}");
+    exit;
+ }

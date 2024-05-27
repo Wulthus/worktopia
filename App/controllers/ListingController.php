@@ -14,6 +14,7 @@ class ListingController {
         'salary',
         'requirements',
         'benefits',
+        'tags',
         'company',
         'address',
         'city',
@@ -28,6 +29,7 @@ class ListingController {
         'email',
         'city',
         'state',
+        'salary',
     ];
 
     public function __construct(){
@@ -87,7 +89,28 @@ class ListingController {
                 'fieldData' => $cleanData,
             ]);
         } else {
-            echo "Field can be submitted";
+            
+            $fields = [];
+            $values = [];
+
+            foreach ($cleanData as $field => $value) {
+                $fields[] = $field;
+                if ($value === ''){
+                    $cleanData[$field] = null;
+                }
+                $values[] = ":" . $field;
+
+
+            };
+
+            $fields = implode(", ", $fields);
+            $values = implode(", ", $values);
+
+            $query = "INSERT INTO listings({$fields}) VALUES ({$values})";
+
+            $this->database->query($query, $cleanData);
+
+            redirect("/listings");
         };
 
      }
