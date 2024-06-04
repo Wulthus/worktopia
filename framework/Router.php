@@ -68,7 +68,7 @@ class Router {
      * @return void
      */
 
-     public function delete($uri, $controller){
+     public function destroy($uri, $controller){
         $this->registerRoute("DELETE", $uri, $controller);
      }
 
@@ -93,8 +93,16 @@ class Router {
 
       public function route($uri, $method){
 
+         $requestMethod = $_SERVER['REQUEST_METHOD'];
+
+         if ($requestMethod === "POST" && isset($_POST['_method'])){
+            $requestMethod = strtoupper($_POST['_method']);
+            $method = $requestMethod;
+         }
+
         foreach($this->routes as $route){
             if ($route['uri'] === $uri && $route['method'] === $method){
+
                $controller = "App\\controllers\\" . $route["controller"];
                $controllerMethod = $route["controllerMethod"];
                

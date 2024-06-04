@@ -114,6 +114,33 @@ class ListingController {
         };
 
      }
+
+     /**
+      *  Function to delete listing from the database
+      *
+      * @return void
+      *
+      */
+      public function delete(){
+
+        $id = $_GET['id'] ?? '';
+
+        $dbParams = [
+            'id' => $id
+        ];
+
+        $listing = $this->database->query('SELECT * FROM listings WHERE id= :id', $dbParams)->fetch();
+
+        if(!$listing){
+            ErrorController::notFound("Listing not found");
+            return;
+        }
+
+        $this->database->query("DELETE FROM listings WHERE id = :id", $dbParams);
+
+        redirect("/");
+
+      }
      
 
 };
