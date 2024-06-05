@@ -39,7 +39,7 @@ class ListingController {
 
     public function index(){
         $listings = $this->database->query("SELECT * FROM listings")->fetchAll();
-        loadView("home", ["listings"=> $listings]); 
+        loadView("listings/listings", ["listings"=> $listings]); 
     }
 
     public function create(){
@@ -138,9 +138,39 @@ class ListingController {
 
         $this->database->query("DELETE FROM listings WHERE id = :id", $dbParams);
 
-        redirect("/");
+        $_SESSION['success_message'] = "Listing deleted succesfully.";
+
+        redirect("/listings");
 
       }
+      
+      /**
+       * Function to edit listing
+       * 
+       * @return void
+       */
+
+      public function edit(){
+        $id = $_GET['id'] ?? '';
+
+        $params = [
+            'id' => $id,
+        ];
+
+        $job = $this->database->query("SELECT * FROM listings WHERE id = :id", $params)->fetch();
+
+        if(!$job){
+            ErrorController::notFound("Listing not found");
+            return;
+        }
+
+        inspectValueAndHold($job);
+
+        loadView("listings/show/details", [
+            "job"=> $job,
+        ]);
+
+    }
      
 
 };

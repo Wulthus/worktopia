@@ -4,15 +4,17 @@ $getRoutes = [
     "/" => "HomeController@index",
     "/listings" => "ListingController@index",
     "/listings/create" => "ListingController@create",
-    "/listings" => "ListingController@details",
+    "/listing" => "ListingController@details",
+    "/listing/edit" => "ListingController@edit",
 ];
 
 $postRoutes = [
-    "/listings" => "ListingController@store"
+    "/listings" => "ListingController@store",
+    "/listing/{id}" => "ListingController@update",
 ];
 
 $deleteRoutes = [
-    "/listings" => "ListingController@delete",
+    "/listing" => "ListingController@delete",
 ];
 
 //---------------------------------------------GET ROUTES
