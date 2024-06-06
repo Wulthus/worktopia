@@ -32,6 +32,40 @@ class ListingController {
         'salary',
     ];
 
+    /**
+    * Helper function that extracts listing ID from the URL
+    *
+    * @return array 
+    */
+
+    protected function getID(){
+        if (isset($_GET['id'])){
+            $id = $_GET['id'];
+                return $id;
+        } else {
+            throw new Exception("No ID was passed into URL");
+        }
+    }
+
+    /**
+     * This function prepares database query and fetches listing based on given id
+     * 
+     * @param array $dbParams
+     * @return array
+     * 
+     */
+
+    protected function getListing($dbParams){
+        $listing = $this->database->query("SELECT * FROM listings WHERE id = :id", $dbParams)->fetch();
+
+        if(!$listing){
+            ErrorController::notFound("Listing not found");
+            return;
+        }
+
+        return $listing;
+    }
+
     public function __construct(){
         $config = require basePath("config/database.php");
         $this-> database = new Database($config);
@@ -47,13 +81,13 @@ class ListingController {
     }
 
     public function details(){
-        $id = $_GET['id'] ?? '';
+        $id = $this->getID();
 
-        $params = [
+        $dbParams = [
             'id' => $id,
         ];
 
-        $job = $this->database->query("SELECT * FROM listings WHERE id = :id", $params)->fetch();
+        $job = $this->getListing($dbParams);
 
         loadView("listings/show/details", [
             "job"=> $job,
@@ -116,14 +150,14 @@ class ListingController {
      }
 
      /**
-      *  Function to delete listing from the database
+      *  Delete listing from the database
       *
       * @return void
       *
       */
       public function delete(){
 
-        $id = $_GET['id'] ?? '';
+        $id = $this->getID();
 
         $dbParams = [
             'id' => $id
@@ -145,32 +179,83 @@ class ListingController {
       }
       
       /**
-       * Function to edit listing
+       * Get listing from the database and open edit page
        * 
        * @return void
        */
 
       public function edit(){
-        $id = $_GET['id'] ?? '';
+        $id = $this->getID();
 
-        $params = [
+        $dbParams = [
             'id' => $id,
         ];
 
-        $job = $this->database->query("SELECT * FROM listings WHERE id = :id", $params)->fetch();
+        $job = $this->database->query("SELECT * FROM listings WHERE id = :id", $dbParams)->fetch();
 
         if(!$job){
             ErrorController::notFound("Listing not found");
             return;
         }
 
-        inspectValueAndHold($job);
-
-        loadView("listings/show/details", [
+        loadView("listings/edit/edit", [
             "job"=> $job,
         ]);
 
     }
+
+    /**
+     * Update edited liting in the database
+     * 
+     * @return void
+     */
+
+    public function update(){
+        $id = $this->getID();
+
+        $dbParams = [
+            'id' => $id,
+        ];
+
+        $listing = $this->getListing($dbParams);
+
+        $updatedValues = array_intersect_key($_POST, array_flip($this->allowedFields));
+
+
+        $cleanData = array_map('sanitizeInput', $updatedValues);
+        $errors = [];
+
+        foreach($this->requiredFields as $field){
+            if (empty($cleanData[$field]) && !Validation::validateString($cleanData[$field])) {
+                $errors[] = '"' . ucfirst($field) . '"' . ' field is required';
+
+            }
+        };
+
+        if (!empty($errors)){
+            loadView('/listings/edit/edit', [
+                'errors'=> $errors,
+                'job' => $listing,
+            ]);
+            exit;
+        } else {
+            $newValues = [];
+            foreach (array_keys($updatedValues) as $field) {
+                $newValues[] = "{$field} = :{$field}";
+            };
+
+            $newValues = implode(", ", $newValues);
+
+            $query = "UPDATE listings SET $newValues WHERE id = :id";
+            $updatedValues["id"] = $dbParams['id'];
+            $this->database->query($query, $updatedValues);
+
+            $_SESSION["success_message"] = "Listing updated successfully";
+
+            redirect("/listing?id=". $id);
+        }
+
+     }
      
 
 };

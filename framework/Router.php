@@ -93,6 +93,7 @@ class Router {
 
       public function route($uri, $method){
 
+
          $requestMethod = $_SERVER['REQUEST_METHOD'];
 
          if ($requestMethod === "POST" && isset($_POST['_method'])){
@@ -101,6 +102,7 @@ class Router {
          }
 
         foreach($this->routes as $route){
+
             if ($route['uri'] === $uri && $route['method'] === $method){
 
                $controller = "App\\controllers\\" . $route["controller"];

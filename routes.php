@@ -10,11 +10,15 @@ $getRoutes = [
 
 $postRoutes = [
     "/listings" => "ListingController@store",
-    "/listing/{id}" => "ListingController@update",
+
 ];
 
 $deleteRoutes = [
     "/listing" => "ListingController@delete",
+];
+
+$putRoutes = [
+    "/listing/update" => "ListingController@update",
 ];
 
 //---------------------------------------------GET ROUTES
@@ -33,4 +37,10 @@ foreach ($postRoutes as $uri => $controller){
 
 foreach ($deleteRoutes as $uri => $controller){
     $router->destroy($uri, $controller);
+}
+
+//---------------------------------------------PUT ROUTES
+
+foreach ($putRoutes as $uri => $controller){
+    $router->put($uri, $controller);
 }
