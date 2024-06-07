@@ -6,10 +6,13 @@ $getRoutes = [
     "/listings/create" => "ListingController@create",
     "/listing" => "ListingController@details",
     "/listing/edit" => "ListingController@edit",
+    "/register" => "UserController@register",
+    "/login" => "UserController@login",
 ];
 
 $postRoutes = [
     "/listings" => "ListingController@store",
+    "/register" => "UserController@store",
 
 ];
 
