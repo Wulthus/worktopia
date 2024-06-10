@@ -33,7 +33,7 @@ class Validation {
         return filter_var($email, FILTER_VALIDATE_EMAIL);
      }
 
-//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------STRING COMPARISON
 
     /**
      * Method compares two strings, returns true if they are identical
