@@ -11,8 +11,8 @@
           <?php if(Session::hasValue('user')): ?>
             <div class="flex justify-between items-center gap-4">
               <div>Welcome <i><?=Session::getValue('user')['name'] ?></i></div>
-              <form type="submit" action="">
-                <button class="text-white inline hover:underline">Logout</button>
+              <form method="POST" action="/logout">
+                <button type="submit" class="text-white inline hover:underline">Logout</button>
               </form>
               <a
                 href="/listings/create"
