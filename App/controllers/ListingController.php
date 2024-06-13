@@ -298,6 +298,32 @@ class ListingController {
         }
 
      }
+
+     /**
+      * Method to search listings by given keywords and location
+      * @return void
+      */
+
+      public function search(){
+        $keywords = isset($_GET['keywords']) ? trim($_GET['keywords']) : '';
+        $location = isset($_GET['location']) ? trim($_GET['location']) : '';
+
+        $query = "SELECT * FROM listings WHERE (title LIKE :keywords OR description LIKE :keywords OR title LIKE :keywords OR company LIKE :keywords OR salary LIKE :keywords)
+        AND (address LIKE :location OR city LIKE :location OR state LIKE :location)";
+        
+        $dbParams = [
+            "keywords" => "%{$keywords}%",
+            "location"=> "%{$location}%",
+        ];
+        $listings = $this->database->query($query, $dbParams)->fetchAll();
+
+        loadView("listings/listings", [
+            'listings' => $listings,
+            'keywords' => $keywords,
+            'location' => $location,
+        ]);
+
+      }
      
 
 };

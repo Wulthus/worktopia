@@ -1,5 +1,18 @@
 <?php
     loadPartial("head");
+
+    $title = "All Jobs";
+
+    if (isset($keywords) && !empty($keywords)){
+        $keywordsString = htmlspecialchars($keywords);
+    };
+    if (isset($location) && !empty($location)){
+        $locationString = htmlspecialchars($location);
+    };
+    if (isset($keywordsString) || isset($locationString)){
+        $title = "Search results for " . $locationString ??= "" .' '. $keywordsString ??= "";
+    };
+
 ?>
     <!-- Nav -->
         <?php loadPartial("nav-bar") ?>
@@ -12,7 +25,7 @@
 
             <?php loadPartial("message") ?>
 
-            <div class="text-center text-3xl mb-4 font-bold border border-gray-300 p-3">All Jobs</div>
+            <div class="text-center text-3xl mb-4 font-bold border border-gray-300 p-3"><?=$title ?></div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             
                 <?php foreach ($listings as $listing) : ?>

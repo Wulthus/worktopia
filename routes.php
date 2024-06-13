@@ -18,6 +18,7 @@ $getRoutes = [
     ["/listing/edit", "ListingController@edit", ["auth"]],
     ["/register", "UserController@register", ["guest"]],
     ["/login", "UserController@login", ["guest"]],
+    ["/listings/search", "ListingController@search"]
 ];
 
 $postRoutes = [
