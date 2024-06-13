@@ -23,8 +23,9 @@ class Authorise {
      */
     public function handle($userRole){
         match (true) {
-            $userRole === "guest" && hasClearence() => redirect("/"),
-            default => redirect("/login"),
+            $userRole === "guest" && $this->hasClearence() => redirect("/"),
+            $userRole === "auth" && !$this->hasClearence() => redirect("/login"),
+            default => null,
         };
     }
 }

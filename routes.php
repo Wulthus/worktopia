@@ -24,7 +24,7 @@ $postRoutes = [
     ["/listings", "ListingController@store", ["auth"]],
     ["/register", "UserController@store",],
     ["/logout", "UserController@logout", ["auth"]],
-    ["/login", "UserController@login", ["guest"]],
+    ["/login", "UserController@authenticate", ["guest"]],
 
 ];
 

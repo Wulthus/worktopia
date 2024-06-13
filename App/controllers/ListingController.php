@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use Framework\Database;
 use Framework\Validation;
+use Framework\Session;
+use Framework\Verification;
 
 class ListingController {
 
@@ -72,7 +74,7 @@ class ListingController {
     }
 
     public function index(){
-        $listings = $this->database->query("SELECT * FROM listings")->fetchAll();
+        $listings = $this->database->query("SELECT * FROM listings ORDER BY created_at DESC")->fetchAll();
         loadView("listings/listings", ["listings"=> $listings]); 
     }
 
@@ -105,9 +107,9 @@ class ListingController {
         $errors = [];
 
         $cleanData = array_intersect_key($_POST, array_flip($this->allowedFields));
-        //-----------------------------------------------------------------------------HARD CODED USER ID, DELETE LATER
-        $cleanData["user_id"] = 1;
-        //-----------------------------------------------------------------------------
+
+        $cleanData["user_id"] = Session::getValue('user')['id'];
+
         $cleanData = array_map('sanitizeInput', $cleanData);
         
         foreach ($this->requiredFields as $field) {
@@ -163,16 +165,35 @@ class ListingController {
             'id' => $id
         ];
 
+        //---------------------------------------------------------------------------------------------FETCH LISTING
+
         $listing = $this->database->query('SELECT * FROM listings WHERE id= :id', $dbParams)->fetch();
+
+        //---------------------------------------------------------------------------------------------HANDLE NONEXISTENT LISTING
 
         if(!$listing){
             ErrorController::notFound("Listing not found");
             return;
         }
 
+        //---------------------------------------------------------------------------------------------VERIFY USER ID
+
+
+        if(!Verification::isOwner($listing->user_id)) {
+            $message = 'You are not authorised to delete this listing';
+            $key = Session::$errorKey;
+            Session::setMessage($message, $key);
+            redirect("/listing?id=" . $id);
+        }
+
+        //---------------------------------------------------------------------------------------------DELETE LISTING
+
+
         $this->database->query("DELETE FROM listings WHERE id = :id", $dbParams);
 
-        $_SESSION['success_message'] = "Listing deleted succesfully.";
+        $message = "Listing deleted succesfully.";
+        $key = Session::$successKey;
+        Session::setMessage($message, $key);
 
         redirect("/listings");
 
@@ -198,6 +219,17 @@ class ListingController {
             return;
         }
 
+        //----------------------------------------------------------------------VERIFY USER ID
+
+        if(!Verification::isOwner($job->user_id)) {
+            $message = 'You are not authorised to edit this listing';
+            $key = Session::$errorKey;
+            Session::setMessage($message, $key);
+            redirect("/listing?id=" . $id);
+        }
+
+        //----------------------------------------------------------------------LOAD THE EDIT FORM
+
         loadView("listings/edit/edit", [
             "job"=> $job,
         ]);
@@ -219,6 +251,13 @@ class ListingController {
 
         $listing = $this->getListing($dbParams);
 
+        if(!Verification::isOwner($listing->user_id)) {
+            $message = 'You are not authorised to edit this listing';
+            $key = Session::$errorKey;
+            Session::setMessage($message, $key);
+            redirect("/listing?id=" . $id);
+        }
+
         $updatedValues = array_intersect_key($_POST, array_flip($this->allowedFields));
 
 
@@ -239,6 +278,7 @@ class ListingController {
             ]);
             exit;
         } else {
+
             $newValues = [];
             foreach (array_keys($updatedValues) as $field) {
                 $newValues[] = "{$field} = :{$field}";
@@ -250,9 +290,11 @@ class ListingController {
             $updatedValues["id"] = $dbParams['id'];
             $this->database->query($query, $updatedValues);
 
-            $_SESSION["success_message"] = "Listing updated successfully";
-
-            redirect("/listing?id=". $id);
+            $message = 'Listing Updated Succesfully';
+            $key = Session::$successKey;
+            Session::setMessage($message, $key);
+            
+            redirect("/listing?id=" . $id);
         }
 
      }

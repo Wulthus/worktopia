@@ -4,6 +4,9 @@ namespace Framework;
 
 class Session {
 
+    public static $successKey = 'success_message';
+    public static $errorKey = 'error_message';
+
     /**
      * Method to start new session
      * 
@@ -34,7 +37,7 @@ class Session {
       * @return mixed
       */
 
-      public static function getValue($key, $default = false){
+      public static function getValue($key, $defaultValue = false){
         return isset($_SESSION[$key]) ? $_SESSION[$key] : $defaultValue;
       }
 
@@ -71,6 +74,32 @@ class Session {
             session_unset();
             session_destroy();
          }
+
+         /**
+          * Method to set a flash message
+          * 
+          * @param string $message
+          * @param string $key
+          * @return void
+          */
+
+          public static function setMessage($message, $key){
+            self::setValue($key, $message);
+          }
+
+          /**
+           * Method retrieves flash message and insets it afterwards
+           * 
+           * @param string $key
+           * @param mixed default
+           * @return string
+           */
+
+           public static function getMessage($key, $default = null){
+            $message = self::getValue($key, $default);
+            self::clearValue($key);
+            return $message;
+           }
 
 
 
